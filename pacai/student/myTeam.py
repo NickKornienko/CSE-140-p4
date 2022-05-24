@@ -1,5 +1,4 @@
 from pacai.agents.capture.defense import DefensiveReflexAgent
-from pacai.agents.capture.offense import OffensiveReflexAgent
 from pacai.agents.capture.reflex import ReflexCaptureAgent
 
 
