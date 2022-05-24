@@ -81,15 +81,10 @@ class OffensiveCTFAgent(ReflexCaptureAgent):
         features['scaredGhostProximity'] = 0
         for ghostDistance in ghostDistances:
             if ghostDistance < 2:
-                features['ghostProximity'] = 2
-
                 if ghosts[0]._scaredTimer > 0:
                     features['scaredGhostProximity'] = 1
-            # if ghostDistance > 1:
-            #     if ghosts[0]._scaredTimer > 0:
-            #         features['scaredGhostProximity'] = 1
-            #     else:
-            #         features['ghostProximity'] = 1
+                else:
+                    features['ghostProximity'] = 1
 
         # give a bonus for eating capsules
         features['capsulesRemaining'] = len(successor.getCapsules())
@@ -144,21 +139,11 @@ class DefensiveCTFAgent(ReflexCaptureAgent):
                 myPos, a.getPosition()) for a in enemies]
             features['invaderDistance'] = min(dists)
 
-        if (action == Directions.STOP):
-            features['stop'] = 1
-
-        rev = Directions.REVERSE[gameState.getAgentState(
-            self.index).getDirection()]
-        if (action == rev):
-            features['reverse'] = 1
-
         return features
 
     def getWeights(self, gameState, action):
         return {
             'numInvaders': -1000,
             'onDefense': 100,
-            'invaderDistance': -10,
-            'stop': -100,
-            'reverse': -2
+            'invaderDistance': -10
         }
