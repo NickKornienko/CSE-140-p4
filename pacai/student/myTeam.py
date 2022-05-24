@@ -95,20 +95,22 @@ class OffensiveCTFAgent(ReflexCaptureAgent):
                               for food in foodList])
             features['distanceToFood'] = minDistance
 
-        # avoid ghosts at all costs
-        enemies = [successor.getAgentState(i)
-                   for i in self.getOpponents(successor)]
-        ghosts = [a for a in enemies if not a.isPacman() and a.getPosition()
-                  is not None]
-        ghostDistances = [self.getMazeDistance(
-            myPos, ghost._position) for ghost in ghosts]
+        # avoid ghosts at all costs unless scared
+        # enemies = [successor.getAgentState(i)
+        #            for i in self.getOpponents(successor)]
+        # ghosts = [a for a in enemies if not a.isPacman() and a.getPosition()
+        #           is not None]
+        # ghostDistances = [self.getMazeDistance(
+        #     myPos, ghost._position) for ghost in ghosts]
 
         features['ghostProximity'] = 0
-        for ghostDistance in ghostDistances:
-            if ghosts[0]._scaredTimer:
-                break
-            if ghostDistance > 1:
-                features['ghostProximity'] = 1
+        features['scaredGhostProximity'] = 0
+        # for ghostDistance in ghostDistances:
+        #     if ghostDistance > 1:
+        #         if ghosts[0]._scaredTimer > 0:
+        #             features['scaredGhostProximity'] = 1
+        #         else:
+        #             features['ghostProximity'] = 1
 
         # give a bonus for eating capsules
         features['capsulesRemaining'] = len(successor.getCapsules())
@@ -120,5 +122,6 @@ class OffensiveCTFAgent(ReflexCaptureAgent):
             'successorScore': 100,
             'distanceToFood': -1,
             'ghostProximity': -999999,
-            'capsulesRemaining': -50
+            'capsulesRemaining': -50,
+            'scaredGhostProximity': 999999
         }
