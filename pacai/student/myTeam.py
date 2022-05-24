@@ -139,11 +139,21 @@ class DefensiveCTFAgent(ReflexCaptureAgent):
                 myPos, a.getPosition()) for a in enemies]
             features['invaderDistance'] = min(dists)
 
+        if (action == Directions.STOP):
+            features['stop'] = 1
+
+        rev = Directions.REVERSE[gameState.getAgentState(
+            self.index).getDirection()]
+        if (action == rev):
+            features['reverse'] = 1
+
         return features
 
     def getWeights(self, gameState, action):
         return {
             'numInvaders': -1000,
             'onDefense': 100,
-            'invaderDistance': -10
+            'invaderDistance': -10,
+            'stop': -100,
+            'reverse': -2
         }
