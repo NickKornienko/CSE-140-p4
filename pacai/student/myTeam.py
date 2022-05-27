@@ -137,7 +137,10 @@ class DefensiveCTFAgent(ReflexCaptureAgent):
         else:
             dists = [self.getMazeDistance(
                 myPos, a.getPosition()) for a in enemies]
-            features['invaderDistance'] = min(dists)
+            if enemies[0]._scaredTimer > 0:
+                features['invaderDistanceScared'] = min(dists)
+            else:
+                features['invaderDistance'] = min(dists)
 
         if (action == Directions.STOP):
             features['stop'] = 1
@@ -154,6 +157,7 @@ class DefensiveCTFAgent(ReflexCaptureAgent):
             'numInvaders': -1000,
             'onDefense': 100,
             'invaderDistance': -10,
+            'invaderDistanceScared': 100,
             'stop': -100,
             'reverse': -2
         }
