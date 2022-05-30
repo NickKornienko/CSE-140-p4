@@ -19,32 +19,6 @@ def createTeam(firstIndex, secondIndex, isRed):
     ]
 
 
-class CTFAgent(ReflexCaptureAgent):
-    """
-    Hybrid agent that will attack unless there are 2 invaders
-    """
-
-    def __init__(self, index, **kwargs):
-        self.numInvaders = 0
-        super().__init__(index)
-
-    def getFeatures(self, gameState, action):
-        enemies = [gameState.getAgentState(i)
-                   for i in self.getOpponents(gameState)]
-        invaders = [a for a in enemies if a.isPacman(
-        ) and a.getPosition() is not None]
-        self.numInvaders = len(invaders)
-
-        if self.numInvaders > 1:
-            return DefensiveCTFAgent.getFeatures(self, gameState, action)
-        return OffensiveCTFAgent.getFeatures(self, gameState, action)
-
-    def getWeights(self, gameState, action):
-        if self.numInvaders > 1:
-            return DefensiveCTFAgent.getWeights(self, gameState, action)
-        return OffensiveCTFAgent.getWeights(self, gameState, action)
-
-
 class OffensiveCTFAgent(ReflexCaptureAgent):
     """
     A reflex agent that seeks food,
@@ -127,6 +101,9 @@ class DefensiveCTFAgent(ReflexCaptureAgent):
         ) and a.getPosition() is not None]
         features['numInvaders'] = len(invaders)
 
+        team = [successor.getAgentState(i)
+                for i in self.getTeam(successor)]
+
         # Go after invaders, or approach enemies on the other side
         if (len(invaders) > 0):
             dists = [self.getMazeDistance(
@@ -135,7 +112,7 @@ class DefensiveCTFAgent(ReflexCaptureAgent):
         else:
             dists = [self.getMazeDistance(
                 myPos, a.getPosition()) for a in enemies]
-            if enemies[0]._scaredTimer > 0:
+            if team[0]._scaredTimer > 0:
                 features['invaderDistanceScared'] = min(dists)
             else:
                 features['invaderDistance'] = min(dists)
