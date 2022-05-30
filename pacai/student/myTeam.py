@@ -10,7 +10,7 @@ def createTeam(firstIndex, secondIndex, isRed):
     and will be False if the blue team is being created.
     """
 
-    firstAgent = CTFAgent
+    firstAgent = OffensiveCTFAgent
     secondAgent = DefensiveCTFAgent
 
     return [
@@ -78,11 +78,10 @@ class OffensiveCTFAgent(ReflexCaptureAgent):
             myPos, ghost._position) for ghost in ghosts]
 
         features['ghostProximity'] = 0
-        features['scaredGhostProximity'] = 0
         for ghostDistance in ghostDistances:
             if ghostDistance < 2:
                 if ghosts[0]._scaredTimer > 0:
-                    features['scaredGhostProximity'] = 1
+                    features['ghostProximity'] = 0
                 else:
                     features['ghostProximity'] = 1
 
@@ -97,7 +96,6 @@ class OffensiveCTFAgent(ReflexCaptureAgent):
             'distanceToFood': -1,
             'ghostProximity': -999999,
             'capsulesRemaining': -50,
-            'scaredGhostProximity': 999999
         }
 
 
